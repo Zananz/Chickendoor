@@ -1,11 +1,10 @@
-#datum mit dem gestarte werden soll hier angeben:
+#date and time with which shoude by started:
+year = 2020
+month = 10
+day = 31
+day_oft_the_week = 6  #monday = 1, tuesday = 2, ... #not imprtend for code just for completeness
 
-jahr = 2020
-monat = 10
-tag = 31
-tag_der_woche = 6  #montag = 1, dienstag = 2,.... #nicht wichtig für code nur für inneren monk
-
-stunde = 14
+hour = 14
 minute = 46
 
 from pyb import RTC #real time clock
@@ -13,38 +12,38 @@ import time
 from pyb import Pin
 from pyb import LED
 
-#da Probleme mit Speicher: anzeige das code ausgeführt wird
-def Start_anzeigen():
+#start will be shown using the on board LED's
+def show_start():
     led_1 = LED(1)
     led_2 = LED(2)
     led_3 = LED(3)
     led_4 = LED(4)
-    
+
     led_1.off()
     led_2.off()
     led_3.off()
     led_4.off()
-    
+
     led_1.on()
     time.sleep_ms(500)
-    
+
     led_1.off()
     led_2.on()
     time.sleep_ms(500)
-    
+
     led_2.off()
     led_3.on()
     time.sleep_ms(500)
-    
+
     led_3.off()
     led_4.on()
     time.sleep_ms(500)
-    
-    led_4.off()
-    
-Start_anzeigen()
 
-#pin1/2  high ---> tür öffnen, pin3/4  high ---> tür schliesen
+    led_4.off()
+
+show_start()
+
+#pin1/2  high ---> open door, pin3/4  high ---> close door
 pin_1 = Pin("X1",Pin.OUT)
 pin_2 = Pin("X2",Pin.OUT)
 pin_3 = Pin("X3",Pin.OUT)
@@ -55,18 +54,18 @@ pin_2.low()
 pin_3.low()
 pin_4.low()
 
-#einrichten der real time clock
-datum = RTC() 
-datum.datetime((jahr, monat, tag, tag_der_woche, stunde, minute, 0, 0))
+#init the real time clock
+datum = RTC()
+datum.datetime((year, month, day, day_oft_the_week, hour, minute, 0, 0))
 
-#keys = datum, vaules = uhrzeiten( [0] = stunde, [1] = minute
-sonnen_aufgänge = { "1,1" : [7,17],
+#keys = date, vaules = time( [0] = hour, [1] = minute )
+sunrises = { "1,1" : [7,17],
                     "1,2" : [7,17],
                     "1,3" : [7,17],
                     "1,4" : [7,16],
                     "1,5" : [7,16],
                     "1,6" : [7,16],
-                    "1,7" : [7,15], 
+                    "1,7" : [7,15],
                     "1,8" : [7,15],
                     "1,9" : [7,14],
                     "1,10" : [7,14],
@@ -433,8 +432,8 @@ sonnen_aufgänge = { "1,1" : [7,17],
                     "12,30" : [7,17],
                     "12,31" : [7,17], }
 
-#keys = datum, vaules = uhrzeiten( [0] = stunde, [1] = minute
-sonnen_untergänge =    {"1,1" : [15,1],
+#keys = date, vaules = time( [0] = hour, [1] = minute )
+sunsets =    {"1,1" : [15,1],
                         "1,2" : [15,3],
                         "1,3" : [15,4],
                         "1,4" : [15,5],
@@ -808,37 +807,41 @@ sonnen_untergänge =    {"1,1" : [15,1],
                         "12,31" : [15,1], }
 
 while 1:
-    
-    #aus dem objekt der rtc interessante informatonen ziehen
-    monat = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[1])
-    tag   = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[2])
-    
-    stunde = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[4])
-    minute = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[5])
-    
-    #vaules aus den listen gewinnen
-    sonnen_aufgang   = sonnen_aufgänge.get("%s,%s" % (monat,tag))
-    sonnen_untergang = sonnen_untergänge.get("%s,%s" % (monat,tag))
 
-    # vergleichen der uhrzeiten,
-    #wenn uhrzeit den sonnenaufgang entspricht ----> tür öffne
-    #wenn uhrzeit den sonnenuntergang - 15min (damit hühner noch einen puffer zum reingehen haben) entspricht ----> tür schließen
-    if [stunde, minute] == sonnen_aufgang:
+    #getting information out of the RTC
+    month = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[1])
+    day   = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[2])
+
+    hour = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[4])
+    minute = int(str(datum.datetime()).replace(("("), "").replace(")","").split(",")[5])
+
+    #getting values out of the lists
+    sonnen_aufgang   = sunrises.get("%s,%s" % (month,day))
+    sonnen_untergang = sunsets.get("%s,%s" % (month,day))
+
+    #checking the time
+
+    #if time = sunrise ----> open door
+    if [hour, minute] == sonnen_aufgang:
         pin_1.high()
         pin_2.high()
         time.sleep(35)
         pin_1.low()
         pin_2.low()
-        
-    elif [stunde, minute-15] == sonnen_untergang:
+
+    #subtrac 30 min from time to get a buffer for the chickens to go in
+    minute -= 30
+    if minute < 0:
+        hour -= 1
+        minute = 60 - int((minute**2)**0.5)
+
+    #if time = sunset -----> close door
+    elif [hour, minute-15] == sonnen_untergang:
         pin_3.high()
         pin_4.high()
         time.sleep(35)
         pin_3.low()
         pin_4.low()
-    
-    #etwas weniger als eine minute pause da code auch laufzeit hat.
+
+    #less than 1 min too protct for skiping 1min (run time code)
     time.sleep(59)
-
-
-
