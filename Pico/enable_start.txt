@@ -1,4 +1,0 @@
-#enable main.py to start
-#1 enalble
-#0 unable
-1
