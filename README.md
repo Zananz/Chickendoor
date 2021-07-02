@@ -1,1 +1,3 @@
-main.py is runing on an pyboard (ESP32). The ESP23 controlls 4 relays building up an H-Bridge circuit to controll the motor's dircetion.(which opens/closes the door)
+A Pico based Door that opens with sunrise and closes 45min afer sunset.
+Setup the rtc in main.py.
+To enabel start after power cut check out enable_strt.txt.
