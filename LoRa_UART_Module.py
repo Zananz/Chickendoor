@@ -25,14 +25,14 @@ class LoRa_UART_Module():
             else: #if tx and rx dosnt fit together
                 raise UARTerror("tx and rx dosnt fit together... they need to be from same chanal")
 
-        if not uart:
+        if not self.uart:
             raise UARTerror("something goes wrong check out... LoRa_UART_Module: def __init__")
 
-    def send(mesagne):
-        self.uart.write("%s%s%s"%(networkkey,networkID,mes)
+    def send(self, mesagne):
+        self.uart.write("%s%s%s"%(self.networkkey, self.networkID, mesagne))
 
-    def read():
+    def read(self):
         self.uart.read()
 
-    def readline():
+    def readline(self):
         self.uart.readline()
