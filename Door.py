@@ -64,6 +64,7 @@ class Chickerdoor():
             self.state = "open"
 
     def close(self):
+
         if self.state == "open":
             self.close_relay_1(not self.default_state_relays)
             self.close_relay_2(not self.default_state_relays)
@@ -83,7 +84,6 @@ class Chickerdoor():
             self.state = "close"
 
     def check_state(self):
-
 
         #getting information out of the RTC
         month = int(str(self.rtc.datetime()).replace(("("), "").replace(")","").split(",")[1])
@@ -108,11 +108,11 @@ class Chickerdoor():
         if minute_for_evening < 0:
             hour_for_evening -= 1
             minute_for_evening = 60 - int((minute_for_evening**2)**0.5)
-
+        
         #if time = sunrise ----> open door
         if [hour, minute] == sunrise and self.state == "close":
             self.open()
-
+            
         #if time = sunset -----> close door
         elif [hour_for_evening, minute_for_evening] == sunset and self.state =="open":
             self.close()

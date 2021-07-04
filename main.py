@@ -1,10 +1,10 @@
 #date and time with which shoude be started:
 year = 2021
 month = 7
-day = 2
+day = 4
 
-hour = 20
-minute = 17
+hour = 16
+minute = 4
 
 import Door
 import LoRa_UART_Module
@@ -30,7 +30,7 @@ with open("enable_start.txt", "r") as txt:
             txt.write("""#enable main.py to start\n
 #1 enalble\n
 #0 unable\n
-0
+1
 """)
     else:
         txt.close()
@@ -64,9 +64,9 @@ show_start()
 rtc = RTC()
 rtc.datetime((year, month, day, 1, hour, minute, 0, 0))
 
-door = Door.Chickerdoor(close_Relay_1 = 0, close_Relay_2 = 1, open_Relay_1 = 2, open_Relay_2 = 3, default_state_relays = 1, sunrises = sun.sunrises, sunsets = sun.sunsets, min_buffer_evening = 45, open_close_button = 16, check_button =17, start_state_door = "open", rtc = rtc)
+door = Door.Chickerdoor(close_Relay_1 = 0, close_Relay_2 = 1, open_Relay_1 = 2, open_Relay_2 = 3, default_state_relays = 1, sunrises = sun.sunrises, sunsets = sun.sunsets, min_buffer_evening = 45, open_close_button = 18, check_button =19, start_state_door = "open", rtc = rtc)
 
-LoRa = LoRa_UART_Module.LoRa_UART_Module(tx = 12, rx = 13, networkkey = "Zananz", networkID = "0004")
+LoRa = LoRa_UART_Module.LoRa_UART_Module(tx = 16, rx = 17, networkkey = "Zananz", networkID = "0004")
 
 masange_counter = 600 #a counter to send a masange per 5min
 
