@@ -30,7 +30,7 @@ with open("enable_start.txt", "r") as txt:
             txt.write("""#enable main.py to start\n
 #1 enalble\n
 #0 unable\n
-1
+0
 """)
     else:
         txt.close()
