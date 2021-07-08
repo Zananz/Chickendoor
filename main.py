@@ -1,10 +1,10 @@
 #date and time with which shoude be started:
 year = 2021
 month = 7
-day = 4
+day = 8
 
-hour = 16
-minute = 4
+hour = 14
+minute = 17
 
 import Door
 import LoRa_UART_Module
@@ -64,7 +64,7 @@ show_start()
 rtc = RTC()
 rtc.datetime((year, month, day, 1, hour, minute, 0, 0))
 
-door = Door.Chickerdoor(close_Relay_1 = 0, close_Relay_2 = 1, open_Relay_1 = 2, open_Relay_2 = 3, default_state_relays = 1, sunrises = sun.sunrises, sunsets = sun.sunsets, min_buffer_evening = 45, open_close_button = 18, check_button =19, start_state_door = "open", rtc = rtc)
+door = Door.Chickerdoor(close_Relay_1 = 2, close_Relay_2 = 3, open_Relay_1 = 0, open_Relay_2 = 1, default_state_relays = 1, sunrises = sun.sunrises, sunsets = sun.sunsets, min_buffer_evening = 45, open_close_button = 18, check_button =19, start_state_door = "open", rtc = rtc)
 
 LoRa = LoRa_UART_Module.LoRa_UART_Module(tx = 16, rx = 17, networkkey = "Zananz", networkID = "0004")
 
